@@ -1,15 +1,16 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
-import store from '../../../store';
+import store, {UPDATE_MORTGAGE, UPDATE_RENT} from '../../../store';
 
 
 class StepThree extends Component{
     constructor(){
         super()
+        const reduxState = store.getState();
         this.state = {
-            mortgage: '',
-            rent: ''
+            mortgage: reduxState.mortgage,
+            rent: reduxState.rent
         }
         this.addMortgage = this.addMortgage.bind(this);
         this.addRent = this.addRent.bind(this);
@@ -36,6 +37,16 @@ class StepThree extends Component{
         //     response.status(200).json(newHouse);
         // })
     }
+    saveChanges = () => {
+        store.dispatch({
+          type: UPDATE_MORTGAGE,
+          payload: this.state.mortgage
+        });
+        store.dispatch({
+            type: UPDATE_RENT,
+            payload: this.state.rent
+        })
+    }
 
     render(){
         return(
@@ -46,7 +57,7 @@ class StepThree extends Component{
                 <h1>Desired Monthly Rent
                     <input onChange={this.addRent} placeholder='0'></input>
                 </h1>
-                <Link to='/wizard/step_two'>Previous</Link>
+                <Link onClick={this.saveChanges} to='/wizard/step_two'>Previous</Link>
                 <button onClick={this.addNewHouse}>Complete</button>
             </div>
         )
